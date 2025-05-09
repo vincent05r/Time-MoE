@@ -112,12 +112,12 @@ def get_forecasts(model, past, pred_len):
   #   _, out = model.forecast(list(past), lfreq)
   #   out = out[:, :, 5]
 
+  past_tensor = torch.tensor(past, device='cuda')
 
-
-  full_out = model.generate(past, max_new_tokens=pred_len)
+  full_out = model.generate(past_tensor, max_new_tokens=pred_len)
   out = full_out[:, -pred_len:]
   
-  return out
+  return out.detach().cpu().numpy()
 
 
 def _mse(y_pred, y_true):
@@ -232,10 +232,7 @@ def eval(config, model):
   for batch in tqdm.tqdm(eval_itr):
     past = batch[0]
     actuals = batch[3]
-    print(past)
-    print(actuals)
     forecasts = get_forecasts(model=model, past=past, pred_len=config.horizon_len)
-    forecasts = forecasts[:, 0:actuals.shape[1]]
     mae_run_losses.append(_mae(forecasts, actuals).sum())
     mse_run_losses.append(_mse(forecasts, actuals).sum())
     smape_run_losses.append(_smape(forecasts, actuals).sum())

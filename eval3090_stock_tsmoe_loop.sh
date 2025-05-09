@@ -6,7 +6,7 @@ base_dir=datasets/test_v1_nv_flat
 datetime_col=Datetime
 
 # Result base directory (all results will go under this)
-result_base_dir=./results/tsfm/tsMOE_ultra_of1
+result_base_dir=./results/tsfm/tsMOE_large_of1
 run_id=1
 
 # Model & Data settings
@@ -16,8 +16,8 @@ context_len=128
 logging=0
 logging_name=exp
 
-model_path=google/timesfm-1.0-200m-pytorch
-# google/timesfm-2.0-500m-pytorch   
+model_path=large
+# base
 
 # === Execution ===
 for horizon_len in "${horizon_lens[@]}"; do
@@ -32,7 +32,7 @@ for horizon_len in "${horizon_lens[@]}"; do
       echo "🕒 Datetime column: $datetime_col"
       echo "📁 Saving results to: $result_dir"
 
-      python -u src/run_eval_tsfm_stock.py \
+      python -u run_eval_stock.py \
         --dataset_dir "$dataset_path" \
         --run_id "$run_id" \
         --datetime_col "$datetime_col" \
